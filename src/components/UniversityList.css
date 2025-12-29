@@ -1,0 +1,26 @@
+
+.sticky-left {
+  position: sticky !important;
+  left: 0;
+  background: white;
+  z-index: 5;
+}
+
+
+.sticky-right {
+  position: sticky !important;
+  right: 0;
+  background: white;
+  z-index: 5;
+}
+
+.MuiDataGrid-columnHeaders .sticky-left,
+.MuiDataGrid-columnHeaders .sticky-right {
+  z-index: 6;
+  background: #f5f7fa;
+}
+
+
+.MuiDataGrid-cell {
+  overflow: visible;
+}
