@@ -38,5 +38,17 @@
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.4",
     "vite": "^7.2.4"
-  }
+  },
+  "description": "",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Devanshi-weblab/umsFrontendDashboard.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Devanshi-weblab/umsFrontendDashboard/issues"
+  },
+  "homepage": "https://github.com/Devanshi-weblab/umsFrontendDashboard#readme"
 }
