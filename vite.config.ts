@@ -4,14 +4,17 @@ import path from 'path'
 
 
 export default defineConfig({
+  build: {
+    chunkSizeWarningLimit: 1500, 
+  },
   plugins: [react()],
-  root: '.', 
+  root: '.',
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'), 
+      '@': path.resolve(__dirname, 'src'),
     },
   },
   server: {
-    port: 5173, 
+    port: 5173,
   },
 })
