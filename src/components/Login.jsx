@@ -13,7 +13,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Register from "./Register";
 import ForgetPassword from "./ForgetPassword";
-import axios from "axios";
+import API from "../api/api"; 
 
 const Login = () => {
   const navigate = useNavigate();
@@ -33,18 +33,16 @@ const Login = () => {
         .min(6, "Password must be at least 6 characters")
         .required("Password is required"),
     }),
-
-
     onSubmit: async (values, { setSubmitting, setErrors }) => {
       try {
-        const res = await API.post("/api/auth/login", values);
+        const res = await API.post("/auth/login", values); 
 
         const { token } = res.data;
         console.log("Login successful, token:", token);
 
-       
         localStorage.setItem("token", token);
 
+        navigate("/dashboard");
       } catch (error) {
         const message =
           error.response?.data?.message || "Invalid email or password";
@@ -109,9 +107,7 @@ const Login = () => {
               value={formik.values.password}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              error={
-                formik.touched.password && Boolean(formik.errors.password)
-              }
+              error={formik.touched.password && Boolean(formik.errors.password)}
               helperText={formik.touched.password && formik.errors.password}
             />
 
@@ -119,10 +115,10 @@ const Login = () => {
               fullWidth
               type="submit"
               variant="contained"
-              disabled={formik.isSubmitting}
+              disabled={formik.isSubmitting || !formik.isValid}
               sx={{ mt: 3, py: 1.2 }}
             >
-              LOGIN
+              {formik.isSubmitting ? "Logging in..." : "LOGIN"}
             </Button>
 
             <Typography

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -6,13 +6,16 @@ import {
   Typography,
   Paper,
   Avatar,
+  CircularProgress,
 } from "@mui/material";
 import PersonAddOutlinedIcon from "@mui/icons-material/PersonAddOutlined";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import axios from "axios";
+import API from "../api/api";
 
 const Register = ({ onBackToLogin }) => {
+  const [apiError, setApiError] = useState("");
+
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -30,9 +33,10 @@ const Register = ({ onBackToLogin }) => {
         .oneOf([Yup.ref("password")], "Passwords do not match")
         .required("Confirm your password"),
     }),
-    onSubmit: async (values, { setSubmitting, setErrors }) => {
+    onSubmit: async (values, { setSubmitting }) => {
+      setApiError(""); 
       try {
-        await axios.post("http://localhost:5000/api/auth/register", {
+        const response = await API.post("/auth/register", {
           email: values.email,
           password: values.password,
         });
@@ -40,9 +44,10 @@ const Register = ({ onBackToLogin }) => {
         alert("Admin registered successfully. Please login.");
         onBackToLogin();
       } catch (error) {
+       
         const message =
-          error.response?.data?.message || "Registration failed";
-        setErrors({ email: message });
+          error.response?.data?.message || "Registration failed. Try again.";
+        setApiError(message);
       } finally {
         setSubmitting(false);
       }
@@ -67,6 +72,13 @@ const Register = ({ onBackToLogin }) => {
         <Typography variant="body2" color="text.secondary" mb={3}>
           Create your admin account
         </Typography>
+
+        {/* Display API Error */}
+        {apiError && (
+          <Typography color="error" variant="body2" mb={2}>
+            {apiError}
+          </Typography>
+        )}
 
         <TextField
           fullWidth
@@ -107,8 +119,7 @@ const Register = ({ onBackToLogin }) => {
             Boolean(formik.errors.confirmPassword)
           }
           helperText={
-            formik.touched.confirmPassword &&
-            formik.errors.confirmPassword
+            formik.touched.confirmPassword && formik.errors.confirmPassword
           }
         />
 
@@ -116,10 +127,14 @@ const Register = ({ onBackToLogin }) => {
           fullWidth
           type="submit"
           variant="contained"
-          disabled={formik.isSubmitting}
-          sx={{ mt: 3, py: 1.2 }}
+          disabled={formik.isSubmitting || !formik.isValid}
+          sx={{ mt: 3, py: 1.2, position: "relative" }}
         >
-          REGISTER
+          {formik.isSubmitting ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            "REGISTER"
+          )}
         </Button>
 
         <Typography variant="body2" sx={{ mt: 2, color: "text.secondary" }}>
