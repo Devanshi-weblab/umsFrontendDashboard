@@ -33,17 +33,19 @@ const Login = () => {
         .min(6, "Password must be at least 6 characters")
         .required("Password is required"),
     }),
+
+
     onSubmit: async (values, { setSubmitting, setErrors }) => {
       try {
         const res = await axios.post(
-          "http://localhost:5000/api/auth/login",
-          {
-            email: values.email,
-            password: values.password,
-          }
+          `${import.meta.env.VITE_API_BASE_URL}/api/auth/login`,
+          values
         );
 
+        console.log("API BASE URL:", import.meta.env.VITE_API_BASE_URL);
+
         const { token } = res.data;
+
 
 
         localStorage.setItem("token", token);
