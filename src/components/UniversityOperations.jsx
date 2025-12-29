@@ -8,7 +8,6 @@ import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import { Box } from "@mui/material";
 import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
-
 import UniversitySelector from "./UniversitySelector";
 import UniversityToggle from "./UniversityToggle";
 import NavigationBar from "./NavigationBar";
@@ -28,11 +27,7 @@ const UniversityOperations = () => {
       try {
         const response = await API.get("/api/programs/overview");
         const data = response.data?.data || response.data;
-
-
         const percentages = { completed: 0, delayed: 0, onTrack: 0, atRisk: 0 };
-
-
         const counts = {
           completed: 0,
           delayed: 0,
@@ -60,18 +55,18 @@ const UniversityOperations = () => {
   }, []);
 
 
-  // ✅ Loading guard
+
   if (loading && tab === "overview") {
     return <Typography sx={{ p: 3 }}>Loading overview...</Typography>;
   }
 
   return (
-    <Grid container spacing={4}>
-      <Grid xs={12} display="flex" justifyContent="flex-start">
+    <Grid container spacing={2}>
+      <Grid size={12} display="flex" justifyContent="flex-start">
         <NavigationBar />
       </Grid>
 
-      <Grid xs={12} display="flex" justifyContent="flex-start">
+      <Grid size={12} display="flex" justifyContent="flex-start">
         <UniversityToggle tab={tab} onTabChange={setTab} />
       </Grid>
 
