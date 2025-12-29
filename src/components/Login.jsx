@@ -37,20 +37,14 @@ const Login = () => {
 
     onSubmit: async (values, { setSubmitting, setErrors }) => {
       try {
-        const res = await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL}/api/auth/login`,
-          values
-        );
-
-        console.log("API BASE URL:", import.meta.env.VITE_API_BASE_URL);
+        const res = await API.post("/api/auth/login", values);
 
         const { token } = res.data;
+        console.log("Login successful, token:", token);
 
-
-
+       
         localStorage.setItem("token", token);
 
-        navigate("/university-operations");
       } catch (error) {
         const message =
           error.response?.data?.message || "Invalid email or password";
