@@ -73,7 +73,7 @@ const UniversityList = () => {
       setLoading(true);
       console.log("Fetching programs with token:", localStorage.getItem("token"));
 
-      const response = await API.get("/api/programs");
+      const response = await API.get("/programs");
       console.log("API response:", response.data);
 
       const rows = response.data?.data || response.data || [];
@@ -178,7 +178,7 @@ const UniversityList = () => {
                     {row.university}
                   </TableCell>
 
-                  <TableCell>{row.programs}</TableCell>
+                  <TableCell>{row.program}</TableCell>
                   <TableCell>{row.currentStatus}</TableCell>
                   <TableCell>{row.issues}</TableCell>
                   <TableCell>{row.proposedAction}</TableCell>
@@ -206,17 +206,20 @@ const UniversityList = () => {
                     <IconButton
                       size="small"
                       color="error"
+                      disableRipple
                       onClick={() => handleOpenDelete(row)}
                     >
                       <DeleteIcon fontSize="small" />
+                      <DeleteSingle
+                        open={openDelete}
+                        data={selectedRow}
+                        onClose={handleCloseDelete}
+                        onSuccess={fetchData}
+                      />
                     </IconButton>
 
-                    <DeleteSingle
-                      open={openDelete}
-                      data={selectedRow}
-                      onClose={handleCloseDelete}
-                      onSuccess={fetchData}
-                    />
+
+
                   </TableCell>
                 </TableRow>
               ))}

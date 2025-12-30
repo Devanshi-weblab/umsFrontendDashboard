@@ -28,7 +28,7 @@ const ForgotPassword = ({ onBackToLogin }) => {
 
     onSubmit: async (values, { setSubmitting }) => {
       try {
-        await API.post("/api/auth/forgot-password", {
+        await API.post("/auth/forgot-password", {
           email: values.email,
         });
 

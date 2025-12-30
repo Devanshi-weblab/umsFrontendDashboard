@@ -12,7 +12,7 @@ import API from "../api/api";
 const DeleteSingle = ({ open, data, onClose, onSuccess }) => {
   const handleDelete = async () => {
     try {
-      await API.delete(`/api/programs/${data._id}`);
+      await API.delete(`/programs/${data._id}`);
       onSuccess(); 
       onClose();   
     } catch (error) {

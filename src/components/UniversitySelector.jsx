@@ -12,7 +12,7 @@ const UniversitySelector = ({ value, onChange }) => {
     const fetchUniversities = async () => {
       setLoading(true);
       try {
-        const response = await API.get("/api/programs");
+        const response = await API.get("/programs");
         const programs = response.data?.data || response.data || []
         const uniqueUniversities = [
           ...new Set(programs.map((item) => item.university)),

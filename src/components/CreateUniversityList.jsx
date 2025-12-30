@@ -31,7 +31,7 @@ const CreateUniversityList = ({ open, handleClose, onSuccess, mode = "create", i
 
   const emptyValues = {
     university: "",
-    programs: "",
+    program: "",
     currentStatus: "",
     issues: "",
     proposedAction: "",
@@ -48,7 +48,7 @@ const CreateUniversityList = ({ open, handleClose, onSuccess, mode = "create", i
       try {
         const payload = {
           university: values.university,
-          programs: values.programs,
+          program: values.program,
           currentStatus: values.currentStatus,
           issues: values.issues || "",
           proposedAction: values.proposedAction,
@@ -60,8 +60,8 @@ const CreateUniversityList = ({ open, handleClose, onSuccess, mode = "create", i
 
         const url =
           mode === "edit"
-            ? `/api/programs/${initialData._id}`
-            : `/api/programs`;
+            ? `/programs/${initialData._id}`
+            : `/programs`;
 
         const response = await API({
           url,
@@ -69,7 +69,6 @@ const CreateUniversityList = ({ open, handleClose, onSuccess, mode = "create", i
           data: payload,
         });
 
-        // ✅ SUCCESS FLOW
         resetForm();
         setIsCustomUniversity(false);
         onSuccess();
@@ -81,32 +80,41 @@ const CreateUniversityList = ({ open, handleClose, onSuccess, mode = "create", i
       }
     },
   });
-  
+
   const [programs, setPrograms] = useState([]);
   const [universities, setUniversities] = useState([]);
   const [isCustomUniversity, setIsCustomUniversity] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleDialogClose = () => {
-  formik.resetForm();
-  setIsCustomUniversity(false);
-  handleClose();
-};
+    formik.resetForm();
+    setIsCustomUniversity(false);
+    handleClose();
+  };
 
   useEffect(() => {
     if (!open) return;
 
-    const fetchPrograms = async () => {
-      try {
-        const response = await API.get("/api/programs");
-        const programs = response.data.data;
-        const uniqueUniversities = [...new Set(programs.map(item => item.university))];
+   const fetchPrograms = async () => {
+  try {
+    const response = await API.get("/programs");
 
-        setUniversities(uniqueUniversities);
-      } catch (error) {
-        console.error("Error fetching universities:", error);
-      }
-    };
+    const programs = response.data?.data || response.data || [];
+
+    const uniqueUniversities = [
+      ...new Set(
+        programs
+          .map(item => item.university)
+          .filter(Boolean) 
+      )
+    ];
+
+    setUniversities(uniqueUniversities);
+  } catch (error) {
+    console.error("Error fetching universities:", error);
+  }
+};
+
 
     fetchPrograms();
   }, [open]);
@@ -119,7 +127,7 @@ const CreateUniversityList = ({ open, handleClose, onSuccess, mode = "create", i
       formik.resetForm({
         values: {
           university: initialData.university ?? "",
-          programs: initialData.programs ?? "",
+          programs: initialData.program?? "",
           currentStatus: initialData.currentStatus ?? "",
           issues: initialData.issues ?? "",
           proposedAction: initialData.proposedAction ?? "",

@@ -36,7 +36,7 @@ const Register = ({ onBackToLogin }) => {
     onSubmit: async (values, { setSubmitting }) => {
       setApiError(""); 
       try {
-        const response = await API.post("/register", {
+        const response = await API.post("/auth/register", {
           email: values.email,
           password: values.password,
         });

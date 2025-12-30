@@ -35,14 +35,14 @@ const Login = () => {
     }),
     onSubmit: async (values, { setSubmitting, setErrors }) => {
       try {
-        const res = await API.post("login", values); 
+        const res = await API.post("/auth/login", values); 
 
         const { token } = res.data;
         console.log("Login successful, token:", token);
 
         localStorage.setItem("token", token);
 
-        navigate("/dashboard");
+        navigate("/university-operations");
       } catch (error) {
         const message =
           error.response?.data?.message || "Invalid email or password";
@@ -109,7 +109,7 @@ const Login = () => {
               onBlur={formik.handleBlur}
               error={formik.touched.password && Boolean(formik.errors.password)}
               helperText={formik.touched.password && formik.errors.password}
-            />
+            /> 
 
             <Button
               fullWidth

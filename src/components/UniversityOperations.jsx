@@ -21,23 +21,42 @@ const UniversityOperations = () => {
   const [overviewData, setOverviewData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-
   useEffect(() => {
     const fetchOverview = async () => {
       try {
-        const response = await API.get("/api/programs/overview");
+        const response = await API.get("/programs/overview");
         const data = response.data?.data || response.data;
-        const percentages = { completed: 0, delayed: 0, onTrack: 0, atRisk: 0 };
+
         const counts = {
           completed: 0,
           delayed: 0,
           onTrack: 0,
           atRisk: 0,
+          unassigned: 0,
         };
 
         data.stats?.forEach((item) => {
-          const key = item.status.toLowerCase().replace(" ", "");
-          counts[key] = item.count;
+          if (!item.status) {
+            counts.unassigned += item.count;
+            return;
+          }
+
+          switch (item.status) {
+            case "Completed":
+              counts.completed = item.count;
+              break;
+            case "Delayed":
+              counts.delayed = item.count;
+              break;
+            case "On Track":
+              counts.onTrack = item.count;
+              break;
+            case "At Risk":
+              counts.atRisk = item.count;
+              break;
+            default:
+              break;
+          }
         });
 
         setOverviewData({ ...data, counts });
@@ -53,6 +72,7 @@ const UniversityOperations = () => {
 
     fetchOverview();
   }, []);
+
 
 
 
@@ -85,10 +105,10 @@ const UniversityOperations = () => {
                     series={[
                       {
                         data: [
-                          { id: "atRisk", value: overviewData.counts.atRisk ?? 0, label: "At Risk", color: "#fb8c00" },
-                          { id: "onTrack", value: overviewData.counts.onTrack ?? 0, label: "On Track", color: "#2979ff" },
-                          { id: "delayed", value: overviewData.counts.delayed ?? 0, label: "Delayed", color: "#e53935" },
-                          { id: "completed", value: overviewData.counts.completed ?? 0, label: "Completed", color: "#2ecc71" },
+                          { id: "atRisk", value: overviewData?.counts?.atRisk ?? 0, label: "At Risk" },
+                          { id: "onTrack", value: overviewData?.counts?.onTrack ?? 0, label: "On Track" },
+                          { id: "delayed", value: overviewData?.counts?.delayed ?? 0, label: "Delayed" },
+                          { id: "completed", value: overviewData?.counts?.completed ?? 0, label: "Completed" },
                         ],
                         innerRadius: 0,
                         outerRadius: 100,
