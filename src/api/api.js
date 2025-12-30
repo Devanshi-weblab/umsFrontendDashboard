@@ -1,22 +1,16 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL.replace(/\/+$/, ""), 
-  withCredentials: true,
+  baseURL: import.meta.env.VITE_API_BASE_URL,
 });
 
 API.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
 
-  if (
-    !config.url.includes("/auth/login") &&
-    !config.url.includes("/auth/register") &&
-    !config.url.includes("/auth/forgot-password")
-  ) {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
   }
+
   return config;
 });
 
