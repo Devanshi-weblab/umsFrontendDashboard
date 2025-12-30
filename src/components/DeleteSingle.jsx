@@ -13,8 +13,8 @@ const DeleteSingle = ({ open, data, onClose, onSuccess }) => {
   const handleDelete = async () => {
     try {
       await API.delete(`/programs/${data._id}`);
-      onSuccess(); 
-      onClose();   
+      onSuccess();
+      onClose();
     } catch (error) {
       console.error(
         "Failed to delete program:",
@@ -23,7 +23,6 @@ const DeleteSingle = ({ open, data, onClose, onSuccess }) => {
     }
   };
 
-  if (!data) return null;
 
   return (
     <Dialog open={open} onClose={onClose}>
@@ -31,7 +30,7 @@ const DeleteSingle = ({ open, data, onClose, onSuccess }) => {
 
       <Typography sx={{ px: 3 }}>
         Are you sure you want to delete{" "}
-        <strong>{data.programName}</strong>?
+        <strong>{data?.programName}</strong>?
       </Typography>
 
       <DialogActions>
@@ -41,6 +40,7 @@ const DeleteSingle = ({ open, data, onClose, onSuccess }) => {
         </Button>
       </DialogActions>
     </Dialog>
+
   );
 };
 

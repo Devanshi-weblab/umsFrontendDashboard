@@ -178,7 +178,7 @@ const UniversityList = () => {
                     {row.university}
                   </TableCell>
 
-                  <TableCell>{row.program}</TableCell>
+                  <TableCell>{row.programs}</TableCell>
                   <TableCell>{row.currentStatus}</TableCell>
                   <TableCell>{row.issues}</TableCell>
                   <TableCell>{row.proposedAction}</TableCell>
@@ -210,13 +210,13 @@ const UniversityList = () => {
                       onClick={() => handleOpenDelete(row)}
                     >
                       <DeleteIcon fontSize="small" />
-                      <DeleteSingle
-                        open={openDelete}
-                        data={selectedRow}
-                        onClose={handleCloseDelete}
-                        onSuccess={fetchData}
-                      />
                     </IconButton>
+                    <DeleteSingle
+                      open={openDelete}
+                      data={selectedRow}
+                      onClose={handleCloseDelete}
+                      onSuccess={fetchData}
+                    />
 
 
 

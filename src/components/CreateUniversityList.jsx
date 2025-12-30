@@ -48,7 +48,7 @@ const CreateUniversityList = ({ open, handleClose, onSuccess, mode = "create", i
       try {
         const payload = {
           university: values.university,
-          program: values.program,
+          programs: values.programs,
           currentStatus: values.currentStatus,
           issues: values.issues || "",
           proposedAction: values.proposedAction,
@@ -127,7 +127,7 @@ const CreateUniversityList = ({ open, handleClose, onSuccess, mode = "create", i
       formik.resetForm({
         values: {
           university: initialData.university ?? "",
-          programs: initialData.program?? "",
+          programs: initialData.programs?? "",
           currentStatus: initialData.currentStatus ?? "",
           issues: initialData.issues ?? "",
           proposedAction: initialData.proposedAction ?? "",

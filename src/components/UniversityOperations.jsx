@@ -71,7 +71,7 @@ const UniversityOperations = () => {
     };
 
     fetchOverview();
-  }, []);
+  }, [tab]);
 
 
 
@@ -105,10 +105,10 @@ const UniversityOperations = () => {
                     series={[
                       {
                         data: [
-                          { id: "atRisk", value: overviewData?.counts?.atRisk ?? 0, label: "At Risk" },
-                          { id: "onTrack", value: overviewData?.counts?.onTrack ?? 0, label: "On Track" },
-                          { id: "delayed", value: overviewData?.counts?.delayed ?? 0, label: "Delayed" },
-                          { id: "completed", value: overviewData?.counts?.completed ?? 0, label: "Completed" },
+                          { id: "atRisk", value: overviewData?.counts?.atRisk ?? 0, label: "At Risk", color: "#fb8c00" },
+                          { id: "onTrack", value: overviewData?.counts?.onTrack ?? 0, label: "On Track", color: "#1976d2" },
+                          { id: "delayed", value: overviewData?.counts?.delayed ?? 0, label: "Delayed", color: "#e53935" },
+                          { id: "completed", value: overviewData?.counts?.completed ?? 0, label: "Completed", color: "#2ecc71" },
                         ],
                         innerRadius: 0,
                         outerRadius: 100,
@@ -158,28 +158,36 @@ const UniversityOperations = () => {
                     <StatusCard
                       status="Completed"
                       count={overviewData?.counts?.completed ?? 0}
-                      percentage={overviewData?.percentages?.completed ?? 0}
+                      percentage={
+                        overviewData?.stats?.find(s => s.status === "Completed")?.percentage ?? 0
+                      }
                       color="#2ecc71"
                     />
 
                     <StatusCard
                       status="On Track"
                       count={overviewData?.counts?.onTrack ?? 0}
-                      percentage={overviewData?.percentages?.onTrack ?? 0}
+                      percentage={
+                        overviewData?.stats?.find(s => s.status === "On Track")?.percentage ?? 0
+                      }
                       color="#2979ff"
                     />
 
                     <StatusCard
                       status="Delayed"
                       count={overviewData?.counts?.delayed ?? 0}
-                      percentage={overviewData?.percentages?.delayed ?? 0}
+                      percentage={
+                        overviewData?.stats?.find(s => s.status === "Delayed")?.percentage ?? 0
+                      }
                       color="#e53935"
                     />
 
                     <StatusCard
                       status="At Risk"
                       count={overviewData?.counts?.atRisk ?? 0}
-                      percentage={overviewData?.percentages?.atRisk ?? 0}
+                      percentage={
+                        overviewData?.stats?.find(s => s.status === "At Risk")?.percentage ?? 0
+                      }
                       color="#fb8c00"
                     />
                   </Stack>

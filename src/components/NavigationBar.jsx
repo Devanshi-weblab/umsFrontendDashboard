@@ -11,6 +11,8 @@ import Tooltip from "@mui/material/Tooltip";
 import AdbIcon from "@mui/icons-material/Adb";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router-dom";
+import logo from "../assets/images.jpg";
+
 
 const NavigationBar = () => {
   const navigate = useNavigate();
@@ -25,39 +27,29 @@ const NavigationBar = () => {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
 
-          {/* LOGO */}
-          <AdbIcon sx={{ display: { xs: "none", md: "flex" }, mr: 1 }} />
-          <Typography
-            variant="h6"
-            noWrap
-            component="div"
+          <Box
             sx={{
               mr: 4,
-              display: { xs: "none", md: "flex" },
-              fontWeight: 700,
-              letterSpacing: ".2rem",
+              display: "flex",
+              alignItems: "center",
             }}
           >
-            LOGO
-          </Typography>
+            <Box
+              component="img"
+              src={logo}
+              alt="Logo"
+              sx={{
+                height: 40,
+                width: "auto",
+              }}
+            />
+          </Box>
 
-          {/* CENTER SPACE */}
+
           <Box sx={{ flexGrow: 1 }} />
 
-          {/* USER AVATAR */}
-          <Tooltip title="Profile">
-            <Avatar
-              sx={{
-                bgcolor: "secondary.main",
-                mr: 2,
-                cursor: "pointer",
-              }}
-            >
-              R
-            </Avatar>
-          </Tooltip>
+       
 
-          {/* BIG LOGOUT BUTTON */}
           <Button
             variant="contained"
             startIcon={<LogoutIcon />}
