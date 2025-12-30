@@ -35,7 +35,7 @@ const Login = () => {
     }),
     onSubmit: async (values, { setSubmitting, setErrors }) => {
       try {
-        const res = await API.post("/api/auth/login", values); 
+        const res = await API.post("/login", values); 
 
         const { token } = res.data;
         console.log("Login successful, token:", token);

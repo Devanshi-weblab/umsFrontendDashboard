@@ -36,7 +36,7 @@ const ResetPassword = ({ onBackToLogin }) => {
 
     onSubmit: async (values, { setSubmitting, resetForm }) => {
       try {
-        const res = await API.post("/api/auth/reset-password", {
+        const res = await API.post("/reset-password", {
           email: values.email.trim(),  // ✅ ensure no spaces
           otp: values.otp,
           password: values.password,
