@@ -24,7 +24,14 @@ const UniversityOperations = () => {
   useEffect(() => {
     const fetchOverview = async () => {
       try {
-        const response = await API.get("/programs/overview");
+        setLoading(true);
+
+        const response = await API.get("/programs/overview", {
+          params: {
+            university: selectedUniversity || undefined,
+          },
+        });
+
         const data = response.data?.data || response.data;
 
         const counts = {
@@ -71,8 +78,13 @@ const UniversityOperations = () => {
     };
 
     fetchOverview();
-  }, [tab]);
+  }, [tab, selectedUniversity]);
 
+  useEffect(() => {
+    if (tab === "overview") {
+      setSelectedUniversity("");
+    }
+  }, [tab]);
 
 
 

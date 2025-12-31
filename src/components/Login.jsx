@@ -13,12 +13,16 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Register from "./Register";
 import ForgetPassword from "./ForgetPassword";
-import API from "../api/api"; 
+import API from "../api/api";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 const Login = () => {
   const navigate = useNavigate();
   const [showRegister, setShowRegister] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+
 
   const formik = useFormik({
     initialValues: {
@@ -33,16 +37,19 @@ const Login = () => {
         .min(6, "Password must be at least 6 characters")
         .required("Password is required"),
     }),
+
     onSubmit: async (values, { setSubmitting, setErrors }) => {
       try {
-        const res = await API.post("/auth/login", values); 
+        const res = await API.post("/auth/login", values);
 
         const { token } = res.data;
-        console.log("Login successful, token:", token);
-
         localStorage.setItem("token", token);
 
-        navigate("/university-operations");
+        setOpenSnackbar(true);
+        setTimeout(() => {
+          navigate("/university-operations");
+        }, 1000);
+
       } catch (error) {
         const message =
           error.response?.data?.message || "Invalid email or password";
@@ -51,6 +58,7 @@ const Login = () => {
         setSubmitting(false);
       }
     },
+
   });
 
   return (
@@ -109,7 +117,7 @@ const Login = () => {
               onBlur={formik.handleBlur}
               error={formik.touched.password && Boolean(formik.errors.password)}
               helperText={formik.touched.password && formik.errors.password}
-            /> 
+            />
 
             <Button
               fullWidth
@@ -147,6 +155,20 @@ const Login = () => {
           </Box>
         </Paper>
       )}
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert
+          onClose={() => setOpenSnackbar(false)}
+          severity="success"
+          sx={{ width: "100%" }}
+        >
+          Login successful
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
