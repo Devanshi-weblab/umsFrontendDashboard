@@ -9,17 +9,15 @@ import {
 
 import API from "../api/api";
 
-const DeleteSingle = ({ open, data, onClose, onSuccess }) => {
+const DeleteSingle = ({ open, id, onClose, onSuccess }) => {
+
   const handleDelete = async () => {
     try {
-      await API.delete(`/programs/${data._id}`);
+      await API.delete(`/programs/${id}`);
       onSuccess();
       onClose();
     } catch (error) {
-      console.error(
-        "Failed to delete program:",
-        error.response?.data || error.message
-      );
+      console.error("Delete failed", error);
     }
   };
 
@@ -29,8 +27,7 @@ const DeleteSingle = ({ open, data, onClose, onSuccess }) => {
       <DialogTitle>Delete Confirmation</DialogTitle>
 
       <Typography sx={{ px: 3 }}>
-        Are you sure you want to delete{" "}
-        <strong>{data?.programName}</strong>?
+        Are you sure you want to delete?
       </Typography>
 
       <DialogActions>
@@ -40,7 +37,6 @@ const DeleteSingle = ({ open, data, onClose, onSuccess }) => {
         </Button>
       </DialogActions>
     </Dialog>
-
   );
 };
 

@@ -19,6 +19,12 @@ import DeleteSingle from './DeleteSingle';
 import StatusChip from './SatusChip';
 import DateFilter from './DateFilter';
 import API from "../api/api";
+import Checkbox from "@mui/material/Checkbox";
+import Fade from "@mui/material/Fade";
+import DownloadExcelButton from "./DownloadExcelButton";
+
+
+
 
 const stickyLeftHeader = {
   position: 'sticky',
@@ -52,6 +58,20 @@ const stickyRightCell = {
   borderLeft: '1px solid #e0e0e0',
 };
 
+const stickyCheckbox = {
+  position: 'sticky',
+  left: 0,
+  zIndex: 4,
+  backgroundColor: '#fff',
+};
+
+const stickyUniversity = {
+  position: 'sticky',
+  left: 56,
+  zIndex: 3,
+  backgroundColor: '#fff',
+};
+
 const headerStyle = {
   fontWeight: 600,
   whiteSpace: 'nowrap',
@@ -66,6 +86,10 @@ const UniversityList = () => {
   const [selectedRow, setSelectedRow] = useState(null);
   const [mode, setMode] = useState("create");
   const [loading, setLoading] = useState(false);
+  const [selected, setSelected] = useState([]);
+  const [deleteId, setDeleteId] = useState(null);
+
+
 
 
   const fetchData = async () => {
@@ -108,38 +132,115 @@ const UniversityList = () => {
 
 
   const handleOpenDelete = (row) => {
-    setSelectedRow(row);
+    setDeleteId(row._id);
     setOpenDelete(true);
   };
+
+  const handleMultiDelete = () => {
+    setDeleteId(selected[0]);
+    setOpenDelete(true);
+  };
+
 
   const handleCloseDelete = () => {
     setOpenDelete(false);
     setSelectedRow(null);
   };
 
+  const isSelected = (id) => selected.includes(id);
+
+  const handleSelectAllClick = (event) => {
+    if (event.target.checked) {
+      const newSelecteds = data.map((n) => n._id);
+      setSelected(newSelecteds);
+      return;
+    }
+    setSelected([]);
+  };
+
+  const handleRowSelect = (id) => {
+    setSelected((prev) =>
+      prev.includes(id)
+        ? prev.filter((item) => item !== id)
+        : [...prev, id]
+    );
+  };
+
+  const fetchPrograms = async (filters = {}) => {
+    try {
+      setLoading(true);
+
+      let response;
+      if (!filters.dateFilter || filters.dateFilter === "all") {
+        response = await API.get("/programs");
+      }
+      else {
+        response = await API.get("/programs", {
+          params: filters
+        });
+      }
+
+      const rows = response.data?.data || response.data || [];
+      setData(rows);
+
+    } catch (error) {
+      console.error("Filter fetch failed:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   return (
     <Grid container spacing={2}>
       <Grid size={12}>
         <Box
           display="flex"
-          justifyContent="flex-end"
+          justifyContent="space-between"
           alignItems="center"
           gap={2}
         >
-          <DateFilter />
 
-          <Button
-            variant="contained"
-            onClick={handleCreate}
-            sx={{
-              height: 40,
-              textTransform: "uppercase",
-              fontWeight: 500
-            }}
-          >
-            Add Program
-          </Button>
+          <Box display="flex" gap={2}>
+
+          </Box>
+
+          <Box display="flex" gap={2} alignItems="center">
+            <DateFilter onFilterChange={fetchPrograms} />
+            <DownloadExcelButton data={data} />
+
+
+            {selected.length > 1 && (
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<DeleteIcon />}
+                onClick={handleMultiDelete}
+                sx={{
+                  height: 40,
+                  textTransform: "uppercase",
+                  fontWeight: 500,
+                }}
+              >
+                Delete ({selected.length})
+              </Button>
+            )}
+
+            <Button
+              variant="contained"
+              onClick={handleCreate}
+              sx={{
+                height: 40,
+                textTransform: "uppercase",
+                fontWeight: 500,
+              }}
+            >
+              Add Program
+            </Button>
+          </Box>
+
         </Box>
+
 
         <CreateUniversityList
           open={openForm}
@@ -158,9 +259,18 @@ const UniversityList = () => {
           <Table stickyHeader sx={{ minWidth: 1600, tableLayout: 'fixed' }}>
             <TableHead>
               <TableRow>
+                <TableCell sx={stickyLeftHeader} padding="checkbox">
+                  <Checkbox
+                    indeterminate={
+                      selected.length > 0 && selected.length < data.length
+                    }
+                    checked={data.length > 0 && selected.length === data.length}
+                    onChange={handleSelectAllClick}
+                  />
+                </TableCell>
                 <TableCell sx={stickyLeftHeader}>University Name</TableCell>
                 <TableCell sx={headerStyle}>Program(s)</TableCell>
-                <TableCell sx={headerStyle}>Current Status</TableCell>
+                <TableCell sx={headerStyle}>Batch</TableCell>
                 <TableCell sx={headerStyle}>Issues / Challenges</TableCell>
                 <TableCell sx={headerStyle}>Proposed Action</TableCell>
                 <TableCell sx={headerStyle}>Responsible Person</TableCell>
@@ -172,61 +282,78 @@ const UniversityList = () => {
             </TableHead>
 
             <TableBody>
-              {data.map((row) => (
-                <TableRow key={row._id} hover>
-                  <TableCell sx={stickyLeftCell}>
-                    {row.university}
-                  </TableCell>
+              {data.map((row) => {
+                const checked = isSelected(row._id);
 
-                  <TableCell>{row.programs}</TableCell>
-                  <TableCell>{row.currentStatus}</TableCell>
-                  <TableCell>{row.issues}</TableCell>
-                  <TableCell>{row.proposedAction}</TableCell>
-                  <TableCell>{row.responsiblePerson}</TableCell>
-                  <TableCell>
-                    {row.deadline
-                      ? new Date(row.deadline).toLocaleDateString()
-                      : ''}
-                  </TableCell>
-                  <TableCell>{row.keyUpdates}</TableCell>
-                  <TableCell>
-                    <StatusChip status={row.status} />
-                  </TableCell>
+                return (
+                  <TableRow
+                    key={row._id}
+                    hover
+                    selected={checked}
+                  >
+
+                    <TableCell padding="checkbox" sx={stickyLeftCell}>
+                      <Checkbox
+                        checked={checked}
+                        onChange={() => handleRowSelect(row._id)}
+                      />
+                    </TableCell>
 
 
-                  <TableCell sx={stickyRightCell}>
+                    <TableCell sx={stickyLeftCell}>
+                      {row.university}
+                    </TableCell>
 
-                    <IconButton
-                      size="small"
-                      onClick={() => handleEdit(row)}
-                    >
-                      <EditIcon fontSize="small" />
-                    </IconButton>
+                    <TableCell>{row.programs}</TableCell>
+                    <TableCell>{row.batch}</TableCell>
 
-                    <IconButton
-                      size="small"
-                      color="error"
-                      disableRipple
-                      onClick={() => handleOpenDelete(row)}
-                    >
-                      <DeleteIcon fontSize="small" />
-                    </IconButton>
-                    <DeleteSingle
-                      open={openDelete}
-                      data={selectedRow}
-                      onClose={handleCloseDelete}
-                      onSuccess={fetchData}
-                    />
+                    <TableCell>{row.issues}</TableCell>
+                    <TableCell>{row.proposedAction}</TableCell>
+                    <TableCell>{row.responsiblePerson}</TableCell>
+                    <TableCell>
+                      {row.deadline
+                        ? new Date(row.deadline).toLocaleDateString()
+                        : ""}
+                    </TableCell>
+                    <TableCell>{row.keyUpdates}</TableCell>
+                    <TableCell>
+                      <StatusChip status={row.status} />
+                    </TableCell>
 
+                    <TableCell sx={stickyRightCell}>
+                      <IconButton size="small" onClick={() => handleEdit(row)}>
+                        <EditIcon fontSize="small" />
+                      </IconButton>
 
-
-                  </TableCell>
-                </TableRow>
-              ))}
+                      <IconButton
+                        size="small"
+                        color="error"
+                        onClick={() => handleOpenDelete(row)}
+                      >
+                        <DeleteIcon fontSize="small" />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
+
           </Table>
         </TableContainer>
       </Grid>
+      <DeleteSingle
+        open={openDelete}
+        id={deleteId}
+        onClose={() => {
+          setOpenDelete(false);
+          setDeleteId(null);
+        }}
+        onSuccess={() => {
+          fetchData();
+          setSelected([]);
+        }}
+      />
+
     </Grid>
   );
 };

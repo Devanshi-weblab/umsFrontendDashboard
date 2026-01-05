@@ -14,12 +14,14 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import API from "../api/api";
+import ProgramSelector from "./ProgramSelector";
+import BatchSelector from "./BatchSelector";
 
 
 const validationSchema = Yup.object({
   university: Yup.string().required("University is required"),
   programs: Yup.string().required("Program is required"),
-  currentStatus: Yup.string().required("Current status is required"),
+  batch: Yup.string().required("Batch is required"), 
   proposedAction: Yup.string().required("Proposed action is required"),
   responsiblePerson: Yup.string().required("Responsible person is required"),
   deadline: Yup.string().required("Timeline is required"),
@@ -27,12 +29,13 @@ const validationSchema = Yup.object({
   keyUpdates: Yup.string().required("Key updates are required"),
 });
 
+
 const CreateUniversityList = ({ open, handleClose, onSuccess, mode = "create", initialData = null, }) => {
 
   const emptyValues = {
     university: "",
-    program: "",
-    currentStatus: "",
+    programs: "",
+    batch: "",
     issues: "",
     proposedAction: "",
     responsiblePerson: "",
@@ -40,6 +43,7 @@ const CreateUniversityList = ({ open, handleClose, onSuccess, mode = "create", i
     status: "",
     keyUpdates: "",
   };
+
 
   const formik = useFormik({
     initialValues: emptyValues,
@@ -49,7 +53,7 @@ const CreateUniversityList = ({ open, handleClose, onSuccess, mode = "create", i
         const payload = {
           university: values.university,
           programs: values.programs,
-          currentStatus: values.currentStatus,
+          batch: values.batch,
           issues: values.issues || "",
           proposedAction: values.proposedAction,
           responsiblePerson: values.responsiblePerson,
@@ -85,6 +89,10 @@ const CreateUniversityList = ({ open, handleClose, onSuccess, mode = "create", i
   const [universities, setUniversities] = useState([]);
   const [isCustomUniversity, setIsCustomUniversity] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isCustomProgram, setIsCustomProgram] = useState(false);
+  const [isCustomBatch, setIsCustomBatch] = useState(false);
+
+
 
   const handleDialogClose = () => {
     formik.resetForm();
@@ -95,25 +103,25 @@ const CreateUniversityList = ({ open, handleClose, onSuccess, mode = "create", i
   useEffect(() => {
     if (!open) return;
 
-   const fetchPrograms = async () => {
-  try {
-    const response = await API.get("/programs");
+    const fetchPrograms = async () => {
+      try {
+        const response = await API.get("/programs");
 
-    const programs = response.data?.data || response.data || [];
+        const programs = response.data?.data || response.data || [];
 
-    const uniqueUniversities = [
-      ...new Set(
-        programs
-          .map(item => item.university)
-          .filter(Boolean) 
-      )
-    ];
+        const uniqueUniversities = [
+          ...new Set(
+            programs
+              .map(item => item.university)
+              .filter(Boolean)
+          )
+        ];
 
-    setUniversities(uniqueUniversities);
-  } catch (error) {
-    console.error("Error fetching universities:", error);
-  }
-};
+        setUniversities(uniqueUniversities);
+      } catch (error) {
+        console.error("Error fetching universities:", error);
+      }
+    };
 
 
     fetchPrograms();
@@ -127,8 +135,8 @@ const CreateUniversityList = ({ open, handleClose, onSuccess, mode = "create", i
       formik.resetForm({
         values: {
           university: initialData.university ?? "",
-          programs: initialData.programs?? "",
-          currentStatus: initialData.currentStatus ?? "",
+          programs: initialData.programs ?? "",
+          batch: initialData.batch ?? "",
           issues: initialData.issues ?? "",
           proposedAction: initialData.proposedAction ?? "",
           responsiblePerson: initialData.responsiblePerson ?? "",
@@ -236,43 +244,77 @@ const CreateUniversityList = ({ open, handleClose, onSuccess, mode = "create", i
             )}
 
             <Grid size={6}>
-              <TextField
-                size="small"
-                label="Program(s) *"
-                name="programs"
-                fullWidth
-                value={formik.values.programs}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={
-                  formik.touched.programs &&
-                  Boolean(formik.errors.programs)
-                }
-                helperText={
-                  formik.touched.programs && formik.errors.programs
-                }
+              <ProgramSelector
+                value={isCustomProgram ? "CUSTOM" : formik.values.programs}
+                onChange={(e) => {
+                  if (e.target.value === "CUSTOM") {
+                    setIsCustomProgram(true);
+                    formik.setFieldValue("programs", "");
+                  } else {
+                    setIsCustomProgram(false);
+                    formik.setFieldValue("programs", e.target.value);
+                  }
+                }}
+                error={formik.touched.programs && Boolean(formik.errors.programs)}
+                helperText={formik.touched.programs && formik.errors.programs}
               />
             </Grid>
 
-            <Grid size={12}>
-              <TextField
-                size="small"
-                label="Current Status *"
-                name="currentStatus"
-                fullWidth
-                value={formik.values.currentStatus}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                error={
-                  formik.touched.currentStatus &&
-                  Boolean(formik.errors.currentStatus)
-                }
-                helperText={
-                  formik.touched.currentStatus &&
-                  formik.errors.currentStatus
-                }
+
+
+            {isCustomProgram && (
+              <Grid size={6}>
+                <TextField
+                  size="small"
+                  label="New Program Name *"
+                  name="programs"
+                  fullWidth
+                  value={formik.values.programs}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={
+                    formik.touched.programs &&
+                    Boolean(formik.errors.programs)
+                  }
+                  helperText={
+                    formik.touched.programs &&
+                    formik.errors.programs
+                  }
+                />
+              </Grid>
+            )}
+
+            <Grid size={6}>
+              <BatchSelector
+                value={isCustomBatch ? "CUSTOM" : formik.values.batch}
+                onChange={(e) => {
+                  if (e.target.value === "CUSTOM") {
+                    setIsCustomBatch(true);
+                    formik.setFieldValue("batch", "");
+                  } else {
+                    setIsCustomBatch(false);
+                    formik.setFieldValue("batch", e.target.value);
+                  }
+                }}
+                error={formik.touched.batch && Boolean(formik.errors.batch)}
+                helperText={formik.touched.batch && formik.errors.batch}
               />
             </Grid>
+            {isCustomBatch && (
+              <Grid size={6}>
+                <TextField
+                  size="small"
+                  label="New Batch *"
+                  name="batch"
+                  fullWidth
+                  value={formik.values.batch}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  error={formik.touched.batch && Boolean(formik.errors.batch)}
+                  helperText={formik.touched.batch && formik.errors.batch}
+                />
+              </Grid>
+            )}
 
             <Grid size={12}>
               <TextField

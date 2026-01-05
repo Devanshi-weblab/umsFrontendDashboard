@@ -1,95 +1,107 @@
 import { useState } from "react";
 import {
-    Box,
-    Select,
-    MenuItem,
-    Button,
-    TextField,
-    Divider
+  Box,
+  Button,
+  Menu,
+  MenuItem,
+  Divider,
+  TextField
 } from "@mui/material";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 
-export default function DateFilter() {
-    const [type, setType] = useState("All Dates");
-    const [fromDate, setFromDate] = useState("");
-    const [toDate, setToDate] = useState("");
+export default function DateFilter({ onFilterChange }) {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [type, setType] = useState("all");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
 
-    const isCustom = type === "Custom Range";
+  const isCustom = type === "custom";
 
-    return (
-        <Box
-            sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: 1.5,
-                px: 2,
-                py: 1.5,
-                borderRadius: 2,
-                bgcolor: "#fff",
-                boxShadow: 1,
-                transition: "all 0.3s ease"
-            }}
-        >
-         
-            <CalendarMonthIcon fontSize="small" />
+  const openMenu = Boolean(anchorEl);
 
-            <Select
-                value={type}
-                onChange={(e) => setType(e.target.value)}
-                variant="standard"
-                disableUnderline
-                sx={{ minWidth: 140 }}
-            >
-                <MenuItem value="All Dates">All Dates</MenuItem>
-                <MenuItem value="Today">Today</MenuItem>
-                <MenuItem value="This Week">This Week</MenuItem>
-                <MenuItem value="This Month">This Month</MenuItem>
-                <MenuItem value="Custom Range">Custom Range</MenuItem>
-            </Select>
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
-         
-            {isCustom && (
-                <>
-                    <Divider orientation="vertical" flexItem />
+  const handleClose = (value) => {
+    setAnchorEl(null);
+    if (value) {
+      setType(value);
+      if (value !== "custom") {
+        onFilterChange({ dateFilter: value });
+      }
+    }
+  };
 
-                    <TextField
-                        type="date"
-                        size="small"
-                        value={fromDate}
-                        onChange={(e) => setFromDate(e.target.value)}
-                        sx={{ width: 140 }}
-                    />
+  const handleApplyCustom = () => {
+    if (!fromDate || !toDate) return;
+    onFilterChange({
+      dateFilter: "custom",
+      startDate: fromDate,
+      endDate: toDate
+    });
+  };
 
-                    <span>—</span>
+  const handleClear = () => {
+    setFromDate("");
+    setToDate("");
+    setType("all");
+    onFilterChange({ dateFilter: "all" });
+  };
 
-                    <TextField
-                        type="date"
-                        size="small"
-                        value={toDate}
-                        onChange={(e) => setToDate(e.target.value)}
-                        sx={{ width: 140 }}
-                    />
+  const labelMap = {
+    all: "All Dates",
+    today: "Today",
+    week: "This Week",
+    month: "This Month",
+    custom: "Custom Range"
+  };
 
-                    <Button
-                        variant="contained"
-                        size="small"
-                        sx={{ px: 3 }}
-                    >
-                        Apply
-                    </Button>
+  return (
+    <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+      <Button
+        variant="outlined"
+        startIcon={<CalendarMonthIcon />}
+        onClick={handleClick}
+        sx={{ textTransform: "none" }}
+      >
+        {labelMap[type]}
+      </Button>
 
-                    <Button
-                        size="small"
-                        onClick={() => {
-                            setFromDate("");
-                            setToDate("");
-                            setType("All Dates");
-                        }}
-                    >
-                        Clear
-                    </Button>
-                </>
-            )}
-        </Box>
-    );
+      <Menu anchorEl={anchorEl} open={openMenu} onClose={() => handleClose()}>
+        <MenuItem onClick={() => handleClose("all")}>All Dates</MenuItem>
+        <MenuItem onClick={() => handleClose("today")}>Today</MenuItem>
+        <MenuItem onClick={() => handleClose("week")}>This Week</MenuItem>
+        <MenuItem onClick={() => handleClose("month")}>This Month</MenuItem>
+        <MenuItem onClick={() => handleClose("custom")}>Custom Range</MenuItem>
+      </Menu>
+
+      {isCustom && (
+        <>
+          <Divider orientation="vertical" flexItem />
+          <TextField
+            type="date"
+            size="small"
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+            sx={{ width: 140 }}
+          />
+          <span>—</span>
+          <TextField
+            type="date"
+            size="small"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
+            sx={{ width: 140 }}
+          />
+          <Button variant="contained" size="small" sx={{ px: 3 }} onClick={handleApplyCustom}>
+            Apply
+          </Button>
+          <Button size="small" onClick={handleClear}>
+            Clear
+          </Button>
+        </>
+      )}
+    </Box>
+  );
 }
