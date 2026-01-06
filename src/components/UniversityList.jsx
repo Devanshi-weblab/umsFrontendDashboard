@@ -22,6 +22,7 @@ import API from "../api/api";
 import Checkbox from "@mui/material/Checkbox";
 import Fade from "@mui/material/Fade";
 import DownloadExcelButton from "./DownloadExcelButton";
+import UniversitySearch from './UniversitySearch';
 
 
 
@@ -88,6 +89,9 @@ const UniversityList = () => {
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState([]);
   const [deleteId, setDeleteId] = useState(null);
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("All");
+
 
 
 
@@ -117,6 +121,14 @@ const UniversityList = () => {
     console.log("useEffect triggered");
     fetchData();
   }, []);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchPrograms();
+    }, 400);
+
+    return () => clearTimeout(timer);
+  }, [search, status]);
+
 
   const handleCreate = () => {
     setMode("create");
@@ -170,15 +182,14 @@ const UniversityList = () => {
     try {
       setLoading(true);
 
-      let response;
-      if (!filters.dateFilter || filters.dateFilter === "all") {
-        response = await API.get("/programs");
-      }
-      else {
-        response = await API.get("/programs", {
-          params: filters
-        });
-      }
+      const params = {
+        ...filters,
+      };
+
+      if (search) params.search = search;
+      if (status && status !== "All") params.status = status;
+
+      const response = await API.get("/programs", { params });
 
       const rows = response.data?.data || response.data || [];
       setData(rows);
@@ -191,8 +202,18 @@ const UniversityList = () => {
   };
 
 
+
   return (
     <Grid container spacing={2}>
+      <Grid size={12}>
+        <UniversitySearch
+          search={search}
+          status={status}
+          onSearchChange={setSearch}
+          onStatusChange={setStatus}
+        />
+      </Grid>
+
       <Grid size={12}>
         <Box
           display="flex"
