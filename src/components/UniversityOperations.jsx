@@ -14,6 +14,8 @@ import NavigationBar from "./NavigationBar";
 import UniversityList from "./UniversityList";
 import StatusCard from "./StatusCards";
 import API from "../api/api";
+import TotalProgramsCard from "./TotalProgramsCard";
+
 
 const UniversityOperations = () => {
   const [tab, setTab] = useState("overview");
@@ -141,9 +143,10 @@ const UniversityOperations = () => {
 
                 </Grid>
 
-                {/* RIGHT SECTION */}
+
                 <Grid size={4}>
                   <Stack spacing={2}>
+
                     <Box
                       sx={{
                         display: "flex",
@@ -166,6 +169,21 @@ const UniversityOperations = () => {
                         }
                       />
                     </Box>
+
+                    <Typography sx={{
+                      fontSize: "13px",
+                      fontWeight: 600,
+                      color: "#6b7280",   
+                      textAlign: "left",
+                      letterSpacing: "0.3px",
+                    }}>
+                      Status of Issues/Challenges
+                    </Typography>
+
+                    {/* TOTAL PROGRAMS */}
+                    <TotalProgramsCard
+                      total={overviewData?.total ?? 0}
+                    />
 
                     <StatusCard
                       status="Completed"
