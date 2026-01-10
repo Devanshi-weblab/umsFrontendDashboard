@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { TextField, MenuItem } from "@mui/material";
-import API from "../api/api";
+import API from "../../api/api";
 
 const BatchSelector = ({
   value,

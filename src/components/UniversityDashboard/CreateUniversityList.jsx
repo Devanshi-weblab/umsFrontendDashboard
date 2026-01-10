@@ -13,7 +13,7 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import API from "../api/api";
+import API from "../../api/api";
 import ProgramSelector from "./ProgramSelector";
 import BatchSelector from "./BatchSelector";
 
@@ -21,7 +21,7 @@ import BatchSelector from "./BatchSelector";
 const validationSchema = Yup.object({
   university: Yup.string().required("University is required"),
   programs: Yup.string().required("Program is required"),
-  batch: Yup.string().required("Batch is required"), 
+  batch: Yup.string().required("Batch is required"),
   proposedAction: Yup.string().required("Proposed action is required"),
   responsiblePerson: Yup.string().required("Responsible person is required"),
   deadline: Yup.string().required("Timeline is required"),
@@ -52,35 +52,34 @@ const CreateUniversityList = ({ open, handleClose, onSuccess, mode = "create", i
       try {
         const payload = {
           university: values.university,
-          programs: values.programs,
+          program: values.program,
           batch: values.batch,
-          issues: values.issues || "",
-          proposedAction: values.proposedAction,
-          responsiblePerson: values.responsiblePerson,
-          deadline: values.deadline ? new Date(values.deadline) : null,
+          group: values.group,
+          projectTitle: values.projectTitle,
+          studentCount: Number(values.studentCount),
+          facultyCoordinator: values.facultyCoordinator,
+          industryExpert: values.industryExpert,
           status: values.status,
-          keyUpdates: values.keyUpdates,
+          certificateDistributed: values.certificateDistributed,
+          startDate: values.startDate,
+          endDate: values.endDate,
         };
 
-        const url =
-          mode === "edit"
-            ? `/programs/${initialData._id}`
-            : `/programs`;
-
         const response = await API({
-          url,
-          method: mode === "edit" ? "PUT" : "POST",
+          url: "/projects",
+          method: "POST",
           data: payload,
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
         });
 
         resetForm();
-        setIsCustomUniversity(false);
-        onSuccess();
+        onSuccess?.();
         handleClose();
-
       } catch (error) {
-        console.error("SUBMIT ERROR →", error);
-        alert("Failed to save program. Please try again.");
+        console.error("PROJECT CREATE ERROR →", error);
+        alert("Failed to add project");
       }
     },
   });

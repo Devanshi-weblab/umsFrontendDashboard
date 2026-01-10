@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 
-import API from "../api/api";
+import API from "../../api/api";
 
 const DeleteSingle = ({ open, id, onClose, onSuccess }) => {
 

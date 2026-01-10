@@ -13,7 +13,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Register from "./Register";
 import ForgetPassword from "./ForgetPassword";
-import API from "../api/api";
+import API from "../../api/api";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 

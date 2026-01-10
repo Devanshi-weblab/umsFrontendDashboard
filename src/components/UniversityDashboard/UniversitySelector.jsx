@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
-import API from "../api/api";
+import API from "../../api/api";
 
 const UniversitySelector = ({ value, onChange }) => {
   const [universities, setUniversities] = useState([]);

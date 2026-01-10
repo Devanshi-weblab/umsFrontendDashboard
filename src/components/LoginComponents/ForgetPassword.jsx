@@ -10,7 +10,7 @@ import {
 import LockResetIcon from "@mui/icons-material/LockReset";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import API from "../api/api";
+import API from "../../api/api";
 import ResetPassword from "./ResetPassword";
 
 const ForgotPassword = ({ onBackToLogin }) => {

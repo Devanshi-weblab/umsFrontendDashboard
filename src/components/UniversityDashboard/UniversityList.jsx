@@ -18,13 +18,11 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import DeleteSingle from './DeleteSingle';
 import StatusChip from './SatusChip';
 import DateFilter from './DateFilter';
-import API from "../api/api";
+import API from "../../api/api";
 import Checkbox from "@mui/material/Checkbox";
 import Fade from "@mui/material/Fade";
 import DownloadExcelButton from "./DownloadExcelButton";
 import UniversitySearch from './UniversitySearch';
-
-
 
 
 const stickyLeftHeader = {
@@ -229,7 +227,6 @@ const UniversityList = () => {
           <Box display="flex" gap={2} alignItems="center">
             <DateFilter onFilterChange={fetchPrograms} />
             <DownloadExcelButton data={data} />
-
 
             {selected.length > 1 && (
               <Button

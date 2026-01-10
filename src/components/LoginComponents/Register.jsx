@@ -11,7 +11,7 @@ import {
 import PersonAddOutlinedIcon from "@mui/icons-material/PersonAddOutlined";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import API from "../api/api";
+import API from "../../api/api";
 
 const Register = ({ onBackToLogin }) => {
   const [apiError, setApiError] = useState("");

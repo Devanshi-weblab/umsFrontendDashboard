@@ -10,10 +10,10 @@ import { Box } from "@mui/material";
 import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined";
 import UniversitySelector from "./UniversitySelector";
 import UniversityToggle from "./UniversityToggle";
-import NavigationBar from "./NavigationBar";
+import NavigationBar from "../NavigationBar/NavigationBar";
 import UniversityList from "./UniversityList";
 import StatusCard from "./StatusCards";
-import API from "../api/api";
+import API from "../../api/api";
 import TotalProgramsCard from "./TotalProgramsCard";
 
 
